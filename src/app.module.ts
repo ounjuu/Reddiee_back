@@ -3,9 +3,16 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-// import { Product } from './entities/product.entity';
+
+// 엔티티
+import { User } from './users/user.entity';
+
+// 모듈
+import { UsersModule } from './users/users.module';
+
 import * as crypto from 'crypto';
 (global as any).crypto = crypto;
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }), // .env 파일 전역 적용
@@ -19,11 +26,11 @@ import * as crypto from 'crypto';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        // entities: [Product],
+        entities: [User],
         synchronize: true,
       }),
     }),
-    // TypeOrmModule.forFeature([Product]),
+    UsersModule, // 여기 추가
   ],
   controllers: [AppController],
   providers: [AppService],
