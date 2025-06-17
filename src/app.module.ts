@@ -4,7 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 // import { Product } from './entities/product.entity';
-
+import * as crypto from 'crypto';
+(global as any).crypto = crypto;
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }), // .env 파일 전역 적용
