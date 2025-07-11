@@ -9,6 +9,8 @@ import { User } from './users/user.entity';
 
 // 모듈
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
+
 import { ChatGateway } from './chat/chat.gateway';
 
 import * as crypto from 'crypto';
@@ -31,6 +33,7 @@ import * as crypto from 'crypto';
         synchronize: true,
       }),
     }),
+    AuthModule,
     UsersModule, // 여기 추가
   ],
   controllers: [AppController],
