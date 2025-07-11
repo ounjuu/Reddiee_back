@@ -9,6 +9,7 @@ import { User } from './users/user.entity';
 
 // 모듈
 import { UsersModule } from './users/users.module';
+import { ChatGateway } from './chat/chat.gateway';
 
 import * as crypto from 'crypto';
 (global as any).crypto = crypto;
@@ -33,6 +34,6 @@ import * as crypto from 'crypto';
     UsersModule, // 여기 추가
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ChatGateway],
 })
 export class AppModule {}
