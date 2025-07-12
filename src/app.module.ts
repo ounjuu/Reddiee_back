@@ -4,12 +4,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-// 엔티티
-import { User } from './users/user.entity';
-
 // 모듈
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { ChatModule } from './chat/chat.module';
 
 import { ChatGateway } from './chat/chat.gateway';
 
@@ -29,12 +27,13 @@ import * as crypto from 'crypto';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        entities: [User],
+        entities: [__dirname + '/**/*.entity.{ts,js}'],
         synchronize: true,
       }),
     }),
     AuthModule,
-    UsersModule, // 여기 추가
+    UsersModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService, ChatGateway],
