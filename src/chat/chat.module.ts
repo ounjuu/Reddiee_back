@@ -5,7 +5,8 @@ import { ChatService } from './chat.service';
 import { ChatGateway } from './chat.gateway';
 import { ChatRoom } from './entities/chat-room.entity';
 import { Message } from './entities/message.entity';
-import { User } from '../users/user.entity'; // User 엔티티 필요
+import { User } from '../users/user.entity';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ChatRoom, Message, User])],

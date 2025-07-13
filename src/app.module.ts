@@ -36,6 +36,6 @@ import * as crypto from 'crypto';
     ChatModule,
   ],
   controllers: [AppController],
-  providers: [AppService, ChatGateway],
+  providers: [AppService],
 })
 export class AppModule {}
