@@ -49,26 +49,34 @@ export class ChatGateway
   handleDisconnect(client: Socket) {
     console.log(`❌ Client disconnected: ${client.id}`);
   }
-
   @SubscribeMessage('createChatRoom')
   async createChatRoom(
     @MessageBody() dto: CreateRoomDto,
     @ConnectedSocket() client: Socket,
   ): Promise<number> {
-    // 사용자 조회
-    const user1 = await this.userRepo.findOne({ where: { id: dto.user1Id } });
-    const user2 = await this.userRepo.findOne({ where: { id: dto.user2Id } });
+    const { user1Id, user2Id } = dto;
 
-    // 채팅방 생성
-    const chatRoom = this.chatRoomRepo.create({
-      user1,
-      user2,
+    // 기존 채팅방 존재 여부 확인 (user1-user2 또는 user2-user1 조합)
+    const existingRoom = await this.chatRoomRepo.findOne({
+      where: [
+        { user1: { id: user1Id }, user2: { id: user2Id } },
+        { user1: { id: user2Id }, user2: { id: user1Id } },
+      ],
     });
+
+    if (existingRoom) {
+      client.emit('chatRoomCreated', existingRoom.id);
+      return existingRoom.id;
+    }
+
+    // 새 채팅방 생성
+    const user1 = await this.userRepo.findOne({ where: { id: user1Id } });
+    const user2 = await this.userRepo.findOne({ where: { id: user2Id } });
+
+    const chatRoom = this.chatRoomRepo.create({ user1, user2 });
     await this.chatRoomRepo.save(chatRoom);
 
-    // 클라이언트에 채팅방 ID 반환
     client.emit('chatRoomCreated', chatRoom.id);
-
     return chatRoom.id;
   }
 

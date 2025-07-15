@@ -1,6 +1,7 @@
 import { Controller, Get, Param, Delete, UseGuards } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { AdminGuard } from '../common/guards/admin.guard';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 
 @Controller('chat')
 export class ChatController {
@@ -12,7 +13,7 @@ export class ChatController {
     return this.chatService.getAllChatRooms();
   }
 
-  @UseGuards(AdminGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('messages/:roomId')
   getMessages(@Param('roomId') roomId: number) {
     return this.chatService.getMessagesByRoom(roomId);
