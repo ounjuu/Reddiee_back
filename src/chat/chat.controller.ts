@@ -8,6 +8,7 @@ export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @UseGuards(AdminGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('rooms')
   findAllChatRooms() {
     return this.chatService.getAllChatRooms();

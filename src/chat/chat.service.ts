@@ -30,7 +30,7 @@ export class ChatService {
     return this.messageRepo.save(message);
   }
 
-  async getAllChatRooms() {
+  async getAllChatRooms(): Promise<ChatRoom[]> {
     return this.chatRoomRepo.find({
       relations: ['user1', 'user2'],
     });
