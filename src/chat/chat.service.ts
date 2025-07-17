@@ -30,10 +30,31 @@ export class ChatService {
     return this.messageRepo.save(message);
   }
 
-  async getAllChatRooms(): Promise<ChatRoom[]> {
-    return this.chatRoomRepo.find({
+  // async getAllChatRooms(): Promise<ChatRoom[]> {
+  //   return this.chatRoomRepo.find({
+  //     relations: ['user1', 'user2'],
+  //   });
+  // }
+  async getAllChatRooms(): Promise<any[]> {
+    const chatRooms = await this.chatRoomRepo.find({
       relations: ['user1', 'user2'],
     });
+
+    const result = await Promise.all(
+      chatRooms.map(async (room) => {
+        const lastMessage = await this.messageRepo.findOne({
+          where: { chatRoom: { id: room.id } },
+          order: { createdAt: 'DESC' },
+        });
+
+        return {
+          ...room,
+          lastMessage: lastMessage?.content || null,
+        };
+      }),
+    );
+
+    return result;
   }
 
   async getMessagesByRoom(roomId: number) {
