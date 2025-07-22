@@ -4,14 +4,22 @@ import {
   Body,
   UseInterceptors,
   UploadedFile,
+  UseGuards,
+  Get,
+  Param,
+  Delete,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { CreateProductDto } from './dto/create-product.dto';
 import { extname } from 'path';
+import { AdminGuard } from '../common/guards/admin.guard';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 
 @Controller('products')
 export class ProductsController {
+  @UseGuards(AdminGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
   @UseInterceptors(
     FileInterceptor('image', {
