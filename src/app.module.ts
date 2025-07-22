@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ChatModule } from './chat/chat.module';
+import { ProductsModule } from './product/products.module';
 
 import { ChatGateway } from './chat/chat.gateway';
 
@@ -34,6 +35,7 @@ import * as crypto from 'crypto';
     AuthModule,
     UsersModule,
     ChatModule,
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
