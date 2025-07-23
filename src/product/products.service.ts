@@ -21,4 +21,12 @@ export class ProductsService {
     });
     return await this.productRepository.save(product);
   }
+
+  async findAll(): Promise<Product[]> {
+    return this.productRepository.find();
+  }
+
+  async remove(id: number): Promise<void> {
+    await this.productRepository.delete(id);
+  }
 }

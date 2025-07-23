@@ -1,10 +1,14 @@
 import {
   Controller,
+  Get,
   Post,
+  Delete,
   Body,
   UseInterceptors,
   UploadedFile,
   UseGuards,
+  ParseIntPipe,
+  Param,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -13,10 +17,17 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { ProductsService } from './products.service';
 import { AdminGuard } from '../common/guards/admin.guard';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { Product } from './product.entity';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
+
+  // 전체 상품 불러오기
+  @Get()
+  async getAllProducts(): Promise<Product[]> {
+    return this.productsService.findAll(); // 수정된 변수명
+  }
 
   @UseGuards(JwtAuthGuard, AdminGuard)
   @Post()
@@ -32,6 +43,13 @@ export class ProductsController {
       }),
     }),
   )
+  // 상품 삭제
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Delete(':id')
+  async deleteProduct(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    await this.productsService.remove(id);
+  }
+
   async create(
     @Body() createProductDto: CreateProductDto,
     @UploadedFile() image: Express.Multer.File,
