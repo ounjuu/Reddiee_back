@@ -5,6 +5,7 @@ import { Message } from './entities/message.entity';
 import { Repository } from 'typeorm';
 import { User } from '../users/user.entity';
 import { SendMessageDto } from './dto/send-message.dto';
+import { In } from 'typeorm';
 
 @Injectable()
 export class ChatService {
@@ -37,24 +38,18 @@ export class ChatService {
   // }
   async getAllChatRooms(): Promise<any[]> {
     const chatRooms = await this.chatRoomRepo.find({
-      relations: ['user1', 'user2'],
+      relations: ['messages', 'messages.sender'], // sender 포함
+      order: { createdAt: 'DESC' },
     });
 
-    const result = await Promise.all(
-      chatRooms.map(async (room) => {
-        const lastMessage = await this.messageRepo.findOne({
-          where: { chatRoom: { id: room.id } },
-          order: { createdAt: 'DESC' },
-        });
-
-        return {
-          ...room,
-          lastMessage: lastMessage?.content || null,
-        };
-      }),
-    );
-
-    return result;
+    return chatRooms.map((room) => {
+      const lastMsg = room.messages?.[room.messages.length - 1];
+      return {
+        ...room,
+        lastMessage: lastMsg?.content || null,
+        lastSenderNick: lastMsg?.sender?.nickName || null, // 마지막 메시지 보낸 사람 닉네임
+      };
+    });
   }
 
   async getMessagesByRoom(roomId: number) {
@@ -76,20 +71,20 @@ export class ChatService {
     return room;
   }
 
-  async createOrFindRoom(user1Id: number, user2Id: number) {
-    const existing = await this.chatRoomRepo.findOne({
-      where: [
-        { user1: { id: user1Id }, user2: { id: user2Id } },
-        { user1: { id: user2Id }, user2: { id: user1Id } },
-      ],
+  async createOrFindRoom(userIds: number[]) {
+    const users = await this.userRepo.find({
+      where: { id: In(userIds) },
     });
+
+    const existing = await this.chatRoomRepo
+      .createQueryBuilder('room')
+      .leftJoinAndSelect('room.users', 'user')
+      .where('user.id IN (:...userIds)', { userIds })
+      .getOne();
 
     if (existing) return existing;
 
-    const user1 = await this.userRepo.findOne({ where: { id: user1Id } });
-    const user2 = await this.userRepo.findOne({ where: { id: user2Id } });
-
-    const newRoom = this.chatRoomRepo.create({ user1, user2 });
+    const newRoom = this.chatRoomRepo.create({ users });
     return this.chatRoomRepo.save(newRoom);
   }
 }

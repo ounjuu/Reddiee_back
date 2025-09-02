@@ -54,26 +54,34 @@ export class ChatGateway
     @MessageBody() dto: CreateRoomDto,
     @ConnectedSocket() client: Socket,
   ): Promise<number> {
-    const { user1Id, user2Id } = dto;
+    const { userIds } = dto;
 
-    // 기존 채팅방 존재 여부 확인 (user1-user2 또는 user2-user1 조합)
-    const existingRoom = await this.chatRoomRepo.findOne({
-      where: [
-        { user1: { id: user1Id }, user2: { id: user2Id } },
-        { user1: { id: user2Id }, user2: { id: user1Id } },
-      ],
-    });
+    if (!userIds || userIds.length < 2) {
+      throw new Error('최소 2명 이상의 유저가 필요합니다.');
+    }
+
+    // 유저 목록 불러오기
+    const users = await this.userRepo.findByIds(userIds);
+    if (users.length !== userIds.length) {
+      throw new Error('일부 유저를 찾을 수 없습니다.');
+    }
+
+    // 기존 방이 있는지 확인 (모든 유저가 정확히 포함된 방)
+    const existingRoom = await this.chatRoomRepo
+      .createQueryBuilder('room')
+      .leftJoinAndSelect('room.users', 'user')
+      .where('user.id IN (:...ids)', { ids: userIds })
+      .groupBy('room.id')
+      .having('COUNT(DISTINCT user.id) = :count', { count: userIds.length })
+      .getOne();
 
     if (existingRoom) {
       client.emit('chatRoomCreated', existingRoom.id);
       return existingRoom.id;
     }
 
-    // 새 채팅방 생성
-    const user1 = await this.userRepo.findOne({ where: { id: user1Id } });
-    const user2 = await this.userRepo.findOne({ where: { id: user2Id } });
-
-    const chatRoom = this.chatRoomRepo.create({ user1, user2 });
+    // 새로운 채팅방 생성
+    const chatRoom = this.chatRoomRepo.create({ users });
     await this.chatRoomRepo.save(chatRoom);
 
     client.emit('chatRoomCreated', chatRoom.id);

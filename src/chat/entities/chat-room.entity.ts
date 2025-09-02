@@ -1,9 +1,9 @@
 import {
   Entity,
   PrimaryGeneratedColumn,
-  ManyToOne,
+  ManyToMany,
+  JoinTable,
   OneToMany,
-  Column,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -15,17 +15,9 @@ export class ChatRoom {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User)
-  user1: User;
-
-  @ManyToOne(() => User)
-  user2: User;
-
-  @Column({ default: false })
-  user1Exited: boolean;
-
-  @Column({ default: false })
-  user2Exited: boolean;
+  @ManyToMany(() => User, { eager: true })
+  @JoinTable() // 반드시 JoinTable 필요
+  users: User[];
 
   @OneToMany(() => Message, (msg) => msg.chatRoom)
   messages: Message[];

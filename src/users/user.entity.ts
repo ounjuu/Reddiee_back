@@ -4,9 +4,11 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToMany,
 } from 'typeorm';
 
 import { Provider, Gender } from './dto/enum';
+import { ChatRoom } from '../chat/entities/chat-room.entity';
 
 export enum Role {
   USER = 'user',
@@ -52,4 +54,7 @@ export class User {
 
   @UpdateDateColumn({ type: 'datetime', precision: 6 })
   updated_at: Date;
+  // ✅ ChatRoom 과 다대다 관계 추가
+  @ManyToMany(() => ChatRoom, (room) => room.users)
+  chatRooms: ChatRoom[];
 }
