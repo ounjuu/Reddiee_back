@@ -9,6 +9,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ChatModule } from './chat/chat.module';
 import { ProductsModule } from './product/products.module';
+import { InquiriesModule } from './inquiries/inquiries.module';
 
 import { ChatGateway } from './chat/chat.gateway';
 
@@ -36,6 +37,7 @@ import * as crypto from 'crypto';
     UsersModule,
     ChatModule,
     ProductsModule,
+    InquiriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,3 +1,4 @@
+// common/guards/admin.guard.ts
 import {
   CanActivate,
   ExecutionContext,
