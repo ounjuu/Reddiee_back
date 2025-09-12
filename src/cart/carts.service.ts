@@ -35,8 +35,15 @@ export class CartsService {
   }
 
   // 장바구니 조회
+  //   async getCart(user: User) {
+  //     return this.cartRepo.find({ where: { user: { id: user.id } } });
+  //   }
+
   async getCart(user: User) {
-    return this.cartRepo.find({ where: { user: { id: user.id } } });
+    return this.cartRepo.find({
+      where: { user: { id: user.id } },
+      relations: ['product'], // Product 정보 포함
+    });
   }
 
   // 장바구니 아이템 삭제

@@ -1,11 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { User } from '../users/user.entity';
 import { Product } from '../product/product.entity';
 
@@ -17,15 +10,9 @@ export class Cart {
   @ManyToOne(() => User, (user) => user.carts, { eager: true })
   user: User;
 
-  @ManyToOne(() => Product, (product) => product.carts, { eager: true })
+  @ManyToOne(() => Product, { eager: true })
   product: Product;
 
-  @Column()
+  @Column({ default: 1 })
   quantity: number;
-
-  @CreateDateColumn()
-  created_at: Date;
-
-  @UpdateDateColumn()
-  updated_at: Date;
 }
