@@ -5,10 +5,12 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToMany,
+  OneToMany,
 } from 'typeorm';
 
 import { Provider, Gender } from './dto/enum';
 import { ChatRoom } from '../chat/entities/chat-room.entity';
+import { Cart } from '../cart/cart.entity';
 
 export enum Role {
   USER = 'user',
@@ -57,4 +59,7 @@ export class User {
   // ✅ ChatRoom 과 다대다 관계 추가
   @ManyToMany(() => ChatRoom, (room) => room.users)
   chatRooms: ChatRoom[];
+
+  @OneToMany(() => Cart, (cart) => cart.user)
+  carts: Cart[];
 }
