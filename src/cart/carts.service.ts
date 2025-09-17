@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Cart } from './cart.entity';
@@ -14,12 +18,11 @@ export class CartsService {
     private readonly productRepo: Repository<Product>,
   ) {}
 
-  // 장바구니 추가/업데이트
   async addToCart(user: User, productId: number, quantity: number) {
     const product = await this.productRepo.findOne({
       where: { id: productId },
     });
-    if (!product) throw new Error('상품이 존재하지 않습니다.');
+    if (!product) throw new NotFoundException('상품이 존재하지 않습니다.');
 
     let cart = await this.cartRepo.findOne({
       where: { user: { id: user.id }, product: { id: productId } },
@@ -28,29 +31,56 @@ export class CartsService {
     if (cart) {
       cart.quantity += quantity;
     } else {
-      cart = this.cartRepo.create({ user, product, quantity });
+      cart = this.cartRepo.create({ user, product, quantity } as Partial<Cart>);
     }
 
     return this.cartRepo.save(cart);
   }
 
-  // 장바구니 조회
-  //   async getCart(user: User) {
-  //     return this.cartRepo.find({ where: { user: { id: user.id } } });
-  //   }
-
   async getCart(user: User) {
-    return this.cartRepo.find({
+    const items = await this.cartRepo.find({
       where: { user: { id: user.id } },
-      relations: ['product'], // Product 정보 포함
+      relations: ['product'],
     });
+
+    const totalPrice = items.reduce(
+      (sum, item) => sum + item.quantity * Number(item.product.price),
+      0,
+    );
+
+    return { items, totalPrice };
   }
 
-  // 장바구니 아이템 삭제
   async removeFromCart(user: User, productId: number) {
-    return this.cartRepo.delete({
+    const result = await this.cartRepo.delete({
       user: { id: user.id },
       product: { id: productId },
     });
+
+    if (result.affected === 0) {
+      throw new NotFoundException('삭제할 장바구니 아이템이 없습니다.');
+    }
+
+    return { success: true };
+  }
+
+  async updateQuantity(user: User, productId: number, quantity: number) {
+    if (quantity < 1)
+      throw new BadRequestException('수량은 1 이상이어야 합니다.');
+
+    const cart = await this.cartRepo.findOne({
+      where: { user: { id: user.id }, product: { id: productId } },
+    });
+
+    if (!cart)
+      throw new NotFoundException('장바구니 아이템이 존재하지 않습니다.');
+
+    cart.quantity = quantity;
+    return this.cartRepo.save(cart);
+  }
+
+  async clearCart(user: User) {
+    await this.cartRepo.delete({ user: { id: user.id } });
+    return { success: true };
   }
 }
