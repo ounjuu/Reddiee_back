@@ -23,7 +23,10 @@ export class CartsController {
   }
 
   @Get()
-  getCart(@Req() req) {
+  async getCart(@Req() req) {
+    if (!req.user) {
+      return []; // 로그인 안 된 유저는 빈 배열 반환
+    }
     return this.cartsService.getCart(req.user);
   }
 
@@ -41,7 +44,7 @@ export class CartsController {
     return this.cartsService.updateQuantity(req.user, productId, body.quantity);
   }
 
-  @Delete()
+  @Delete('clear')
   clearCart(@Req() req) {
     return this.cartsService.clearCart(req.user);
   }
