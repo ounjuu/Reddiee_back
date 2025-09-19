@@ -8,6 +8,7 @@ import {
   UseGuards,
   Req,
   Patch,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { CartsService } from './carts.service';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
@@ -38,7 +39,7 @@ export class CartsController {
   @Patch(':productId')
   updateQuantity(
     @Req() req,
-    @Param('productId') productId: number,
+    @Param('productId', ParseIntPipe) productId: number,
     @Body() body: { quantity: number },
   ) {
     return this.cartsService.updateQuantity(req.user, productId, body.quantity);
