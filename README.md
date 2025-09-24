@@ -1,99 +1,71 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🍒 REDDIEE
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+**REDDIEE**는 쇼핑몰과 관리자 채팅 기능을 포함한 웹 서비스 프로젝트입니다.  
+Next.js(프론트엔드), Nest.js(백엔드), Socket.io, MySQL을 활용하여 구현했습니다.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+-> 프론트엔드 : https://github.com/ounjuu/Reddiee_front
+---
 
-## Description
+## 🛠 기술 스택
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **Frontend:** Next.js, TypeScript, Zustand, Tailwind CSS
+- **Backend:** Nest.js, TypeORM, Socket.io
+- **Database:** MySQL
+- **API 통신:** Axios, REST API
+- **실시간 기능:** Socket.io (채팅)
+- **환경 관리:** `.env` 파일 사용, JWT 기반 인증
 
-## Project setup
+---
 
-```bash
-$ npm install
-```
+## 🔹 프로젝트 미리보기
 
-## Compile and run the project
+<img width="947" height="452" alt="image" src="https://github.com/user-attachments/assets/8ffad4a5-ccb4-4842-ac80-e81f8fec10c8" />
+<img width="950" height="443" alt="image" src="https://github.com/user-attachments/assets/17b016ec-4adb-43a6-abef-7580120a92d4" />
+<img width="952" height="446" alt="image" src="https://github.com/user-attachments/assets/156863eb-d63a-4911-88fe-b550d451a0cc" />
+<img width="956" height="435" alt="image" src="https://github.com/user-attachments/assets/0e6559ac-5923-4b52-92b8-abf68c6acb40" />
+<img width="956" height="446" alt="image" src="https://github.com/user-attachments/assets/bcd015bd-0bad-494c-87cb-5e3e86ffbb13" />
+<img width="945" height="444" alt="image" src="https://github.com/user-attachments/assets/143d9ad7-7790-4bf7-950d-61e620009382" />
+<img width="953" height="446" alt="image" src="https://github.com/user-attachments/assets/f644779a-4903-4297-8aa5-82e464a0b9ec" />
 
-```bash
-# development
-$ npm run start
+---
 
-# watch mode
-$ npm run start:dev
+## 🔹 프로젝트 주요 기능
 
-# production mode
-$ npm run start:prod
-```
+### 쇼핑몰
+- 상품 조회, 등록, 수정, 삭제
+- 장바구니 기능 및 수량 변경
+- 로그인/회원가입 및 JWT 인증 (Zustand)
+- 관리자 전용 상품 등록 페이지
 
-## Run tests
+### 채팅 서비스
+- 관리자와 일반 사용자 간 실시간 채팅
+- Socket.io를 활용한 채팅방 생성 및 메시지 전송
+- 관리자 전용 채팅방에서 여러 유저 채팅 관리
+- 메시지 DB 저장 및 불러오기
+- 입력창 조건부 렌더링 (관리자는 입력 불가, 안내 메시지 표시)
+- 메시지 스크롤 하단 고정
 
-```bash
-# unit tests
-$ npm run test
+### 기타
+- 상태 관리: Zustand
+- 쿠키 기반 로그인 유지
+- 반응형 UI 지원 (Tailwind CSS)
+- 에러 처리 및 유효성 검증
 
-# e2e tests
-$ npm run test:e2e
+---
 
-# test coverage
-$ npm run test:cov
-```
+### 📝 추가 예정
+- 마이페이지
+- 결제 기능
 
-## Deployment
+---
+1. 환경 변수 설정(프론트엔드 .env.local)
+NEXT_PUBLIC_API_URL=http://localhost:5000
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+2. 백엔드 실행
+npm install
+npm run start:dev
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+3. 프론트엔드 실행
+cd reddiee-front
+npm install
+npm run dev
