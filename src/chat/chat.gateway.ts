@@ -49,38 +49,42 @@ export class ChatGateway
   handleDisconnect(client: Socket) {
     console.log(`❌ Client disconnected: ${client.id}`);
   }
+  /** 채팅방 생성 */
   @SubscribeMessage('createChatRoom')
   async createChatRoom(
-    @MessageBody() dto: CreateRoomDto,
+    @MessageBody() data: { userIds: number[] },
     @ConnectedSocket() client: Socket,
   ): Promise<number> {
-    const { userIds } = dto;
+    const { userIds } = data;
 
     if (!userIds || userIds.length < 2) {
       throw new Error('최소 2명 이상의 유저가 필요합니다.');
     }
 
-    // 유저 목록 불러오기
+    // 유저 조회
     const users = await this.userRepo.findByIds(userIds);
     if (users.length !== userIds.length) {
       throw new Error('일부 유저를 찾을 수 없습니다.');
     }
 
-    // 기존 방이 있는지 확인 (모든 유저가 정확히 포함된 방)
-    const existingRoom = await this.chatRoomRepo
-      .createQueryBuilder('room')
-      .leftJoinAndSelect('room.users', 'user')
-      .where('user.id IN (:...ids)', { ids: userIds })
-      .groupBy('room.id')
-      .having('COUNT(DISTINCT user.id) = :count', { count: userIds.length })
-      .getOne();
+    // 이미 존재하는 방 확인 (정확히 같은 유저 포함)
+    const rooms = await this.chatRoomRepo.find({ relations: ['users'] });
+
+    const existingRoom = rooms.find((room) => {
+      const roomUserIds = room.users
+        .map((u) => u.id)
+        .sort()
+        .join(',');
+      const targetIds = userIds.slice().sort().join(',');
+      return roomUserIds === targetIds;
+    });
 
     if (existingRoom) {
       client.emit('chatRoomCreated', existingRoom.id);
       return existingRoom.id;
     }
 
-    // 새로운 채팅방 생성
+    // 새 채팅방 생성
     const chatRoom = this.chatRoomRepo.create({ users });
     await this.chatRoomRepo.save(chatRoom);
 
@@ -94,16 +98,15 @@ export class ChatGateway
   @SubscribeMessage('message')
   async handleMessage(
     @MessageBody()
-    data: { chatRoomId: number; senderId: number; message: string },
+    data: { chatRoomId: number; senderId: number; content: string },
     @ConnectedSocket() client: Socket,
   ) {
-    const { chatRoomId, senderId, message } = data;
+    const { chatRoomId, senderId, content } = data; // content로 추출
 
-    // 메시지 저장 로직
     const savedMessage = await this.chatService.sendMessage({
       chatRoomId,
       senderId,
-      content: message,
+      content,
     });
 
     // 모든 클라이언트에게 메시지 전송
