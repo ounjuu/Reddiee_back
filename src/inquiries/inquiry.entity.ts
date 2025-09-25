@@ -24,6 +24,9 @@ export class Inquiry {
   @Column('text')
   message: string;
 
+  @Column({ type: 'enum', enum: ['pending', 'done'], default: 'pending' })
+  status: 'pending' | 'done';
+
   // ManyToOne 관계 (Inquiry : User = N : 1)
   @ManyToOne(() => User, { eager: true }) // User 엔티티에 역참조 필드 필요 없음
   user: User;

@@ -1,9 +1,18 @@
-import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  UseGuards,
+  Req,
+  Patch,
+  Delete,
+  Param,
+} from '@nestjs/common';
 import { InquiriesService } from './inquiries.service';
 import { Inquiry } from './inquiry.entity';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { AdminGuard } from '../common/guards/admin.guard';
-import { Req } from '@nestjs/common';
 
 @Controller('inquiries')
 export class InquiriesController {
@@ -12,7 +21,6 @@ export class InquiriesController {
   // 로그인한 유저만 문의 작성 가능
   @UseGuards(JwtAuthGuard)
   @Post()
-  @UseGuards(JwtAuthGuard)
   async createInquiry(
     @Body('name') name: string,
     @Body('email') email: string,
@@ -37,5 +45,19 @@ export class InquiriesController {
   @Get()
   async getAllInquiries(): Promise<Inquiry[]> {
     return this.inquiriesService.getAllInquiries();
+  }
+
+  // 관리자만 상태 변경 가능
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Patch(':id/done')
+  async markDone(@Param('id') id: number) {
+    return this.inquiriesService.updateStatus(id, 'done');
+  }
+
+  // 관리자만 삭제 가능
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Delete(':id')
+  async deleteInquiry(@Param('id') id: number) {
+    return this.inquiriesService.deleteInquiry(id);
   }
 }
