@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Like } from '../likes/like.entity';
 
 @Entity('product')
 export class Product {
@@ -19,4 +20,7 @@ export class Product {
 
   @Column({ nullable: true })
   imageUrl?: string;
+
+  @OneToMany(() => Like, (like) => like.product)
+  likes: Like[];
 }

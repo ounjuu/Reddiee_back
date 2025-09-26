@@ -11,6 +11,7 @@ import {
 import { Provider, Gender } from './dto/enum';
 import { ChatRoom } from '../chat/entities/chat-room.entity';
 import { Cart } from '../cart/cart.entity';
+import { Like } from '../likes/like.entity';
 
 export enum Role {
   USER = 'user',
@@ -62,4 +63,7 @@ export class User {
 
   @OneToMany(() => Cart, (cart) => cart.user)
   carts: Cart[];
+
+  @OneToMany(() => Like, (like) => like.user)
+  likes: Like[];
 }

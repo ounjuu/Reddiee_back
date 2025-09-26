@@ -11,6 +11,7 @@ import { ChatModule } from './chat/chat.module';
 import { ProductsModule } from './product/products.module';
 import { InquiriesModule } from './inquiries/inquiries.module';
 import { CartsModule } from './cart/carts.module';
+import { LikesModule } from './likes/likes.module';
 
 import { ChatGateway } from './chat/chat.gateway';
 
@@ -40,6 +41,7 @@ import * as crypto from 'crypto';
     ProductsModule,
     InquiriesModule,
     CartsModule,
+    LikesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
