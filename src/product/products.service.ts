@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
+import { NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class ProductsService {
@@ -28,5 +29,13 @@ export class ProductsService {
 
   async remove(id: number): Promise<void> {
     await this.productRepository.delete(id);
+  }
+
+  async findOne(id: number): Promise<Product> {
+    const product = await this.productRepository.findOne({ where: { id } });
+    if (!product) {
+      throw new NotFoundException(`ID ${id} 상품을 찾을 수 없습니다.`);
+    }
+    return product;
   }
 }

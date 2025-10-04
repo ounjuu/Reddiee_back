@@ -29,6 +29,14 @@ export class ProductsController {
     return this.productsService.findAll(); // 수정된 변수명
   }
 
+  // ✅ 상품 상세 조회 추가
+  @Get(':id')
+  async getProductById(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Product> {
+    return this.productsService.findOne(id);
+  }
+
   @UseGuards(JwtAuthGuard, AdminGuard)
   @Post()
   @UseInterceptors(
